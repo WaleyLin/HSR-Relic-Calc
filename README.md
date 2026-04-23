@@ -114,23 +114,6 @@ Use the domain score as your daily/weekly resin routing guide.
 
 ---
 
-## Sharing This Sheet
-
-### Option A — GitHub (recommended for a public repo)
-1. Upload `HSR_Relic.xlsx` directly to your repository
-2. GitHub will show a preview of the file when someone clicks it
-3. Visitors click **Download** to get their own copy and fill it in
-
-### Option B — Google Sheets (easiest to share a live copy)
-1. Import the file into Google Sheets (File → Import)
-2. Go to **File → Share → Publish to web** if you want a read-only public link
-3. Or use **File → Share → Share with others** and set it to *Anyone with the link can view*
-4. Viewers can then go to **File → Make a copy** to get their own editable version
-
-### Option C — Direct file link
-Host the `.xlsx` on any file sharing service (Google Drive, Dropbox, OneDrive) and drop the download link in your README.
-
----
 
 ## Project Structure
 
