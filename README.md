@@ -1,4 +1,4 @@
-# 🪐 HSR Relic Farming Planner
+# HSR Relic Farming Planner
 
 A Honkai: Star Rail spreadsheet that scores your current relic quality across every character and tells you exactly which Cavern of Corrosion to farm for maximum account-wide improvement.
 
