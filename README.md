@@ -1,135 +1,132 @@
-# HSR Relic Farming Planner
+# HSR Relic Domain Optimizer
 
-A Honkai: Star Rail spreadsheet that scores your current relic quality across every character and tells you exactly which Cavern of Corrosion to farm for maximum account-wide improvement.
+Stop wasting resin farming the wrong domain.
 
-![Excel](https://img.shields.io/badge/Excel-217346?style=flat&logo=microsoftexcel&logoColor=white)
-![Google Sheets](https://img.shields.io/badge/Google%20Sheets-34A853?style=flat&logo=googlesheets&logoColor=white)
-![HSR](https://img.shields.io/badge/Game-Honkai%3A%20Star%20Rail-blueviolet?style=flat)
+This is a single-file tool that helps you figure out which Honkai: Star Rail relic domains are actually worth your time based on how bad your current relics are across your entire roster. Rate every piece, and it tells you where to grind.
 
 ---
 
-## What It Does
+## The Problem It Solves
 
-Instead of guessing which domain to farm, this sheet answers:
+You've got 12 characters. Some have terrible boots on their cavern set. One has a bad sphere. Another has a great cavern set but a trash planar rope. You could eyeball which domain to run next — or you could feed all that info into this thing and get a ranked list in 5 seconds.
 
-> *"Based on how bad my relics currently are, which Cavern of Corrosion gives the most account-wide improvement per resin spent?"*
-
-It works by converting your relic ratings into upgrade priority points, aggregating them per set, then ranking every domain by the combined value of its two relic sets.
+It scores your bad relics, weights them by how important they are to fix, and surfaces the domain that covers the most urgent upgrades across your whole account.
 
 ---
 
 ## How to Use It
 
-### Step 1 — Open the file
-
-- **Excel**: Open `HSR_Relic.xlsx` directly. All formulas are live.
-- **Google Sheets**: Go to **File → Import → Upload** and select the file. Choose *Replace spreadsheet* when prompted.
-
-### Step 2 — Fill in the Characters tab
-
-This is the only tab you type into. Everything else updates automatically.
-
-For each character, fill in:
-
-| Column | What to enter |
-|--------|--------------|
-| A | Character name |
-| B | Their 4-piece relic set name |
-| C | Their 2-piece planar ornament set name |
-| D–G | Rating (1–9) for each of their 4 relic pieces (head, hands, body, feet) |
-| H–I | Rating (1–9) for each of their 2 planar ornament pieces (sphere, rope) |
-
-**Rating guide:**
-
-| Rating | Meaning |
-|--------|---------|
-| 1–2 | Terrible — needs replacing urgently |
-| 3 | Below average — worth upgrading eventually |
-| 4–7 | Acceptable to good |
-| 8–9 | Near-perfect or BiS |
-
-To add a new character, just type into the next empty row. To remove one, clear the row entirely.
-
-### Step 3 — Read the SetValues tab
-
-This tab is read-only — don't edit it.
-
-It automatically lists every relic set used across your roster and shows each set's **farm priority score**. Higher score = more characters are wearing weak relics from that set = more reason to farm it.
-
-The score is calculated by summing the point values of all relic pieces for that set across all characters:
-
-| Relic rating | Points |
-|--------------|--------|
-| ≤ 2 | 1.00 |
-| 3 | 0.25 |
-| 4–9 | 0.00 |
-
-So a set worn by three characters all with rating-2 relics scores much higher than a set worn by one character with all rating-5 pieces.
-
-### Step 4 — Read the Domain tab
-
-This tab is also read-only.
-
-Each row is a Cavern of Corrosion or Simulated Universe world. The tab looks up the farm score for each domain's two sets and adds them together, giving you a **total domain priority score**. The higher the score, the more your account benefits from farming there right now.
-
-Use the domain score as your daily/weekly resin routing guide.
+**Open the file.** It's a single `.html` file. No install, no npm, no Python environment. Open it in Chrome or Firefox and you're done.
 
 ---
 
-## Tab Reference
+### Step 1 — Rate your relics
 
-### Tab 1 — Characters
+Each character gets a row. Pick their cavern set (4-piece, Head/Hands/Body/Boots) and their planar set (2-piece, Sphere/Rope), then give each piece a score from 1–7:
 
-| Columns | Content |
-|---------|---------|
-| A | Character name |
-| B | 4-piece relic set |
-| C | 2-piece planar ornament set |
-| D–G | Individual relic piece ratings (4 pieces) |
-| H–I | Individual ornament piece ratings (2 pieces) |
-| J–M | Auto-calculated point value for each relic piece |
-| N–O | Auto-calculated point value for each ornament piece |
-| P | Total farm priority score for the 4-piece set |
-| Q | Total farm priority score for the 2-piece set |
+| Score | What it means |
+|-------|---------------|
+| 1 | Garbage — wrong main stat, wrong substats |
+| 2 | Bad — needs replacing soon |
+| 3 | Usable but not great |
+| 4 | Decent, not prioritizing a replacement |
+| 5 | Good |
+| 6 | Great |
+| 7 | Best in slot, don't touch |
 
-> Columns J–Q are formula-driven and update automatically. Do not edit them.
-
-### Tab 2 — SetValues
-
-| Column | Content |
-|--------|---------|
-| A | Relic set name (auto-populated from Characters tab) |
-| B | Total farm priority score for that set (sum across all characters) |
-
-### Tab 3 — Domain
-
-| Column | Content |
-|--------|---------|
-| A | Domain name |
-| B | First relic set dropped here |
-| C | Second relic set dropped here |
-| D | Farm score of set B (pulled from SetValues) |
-| E | Farm score of set C (pulled from SetValues) |
-| F | Combined domain priority score (D + E) |
+The default scoring weights 2s heavily and gives 3s a small nudge. 4 and above contribute zero urgency — the tool doesn't care about good relics, only bad ones.
 
 ---
 
+### Step 2 — Tune the scoring (optional)
 
-## Project Structure
+The **Scoring Config** panel lets you change how many points each rating contributes toward farm priority. The defaults are tuned for "farm anything rated 2 or below, occasionally fix 3s" — but you can change this:
+
+- **Strict** — only 1s and 2s matter, 3s are ignored
+- **Linear** — gradual decay from 1 through 7, everything below perfect gets some weight
+- **Binary** — anything 3 or below counts equally, good for when you just want volume
+
+---
+
+### Step 3 — Quick Entry (the fast way)
+
+If you have your data in a spreadsheet already, paste it directly into the Quick Entry box. It accepts tab-separated rows in this format:
 
 ```
-HSR-Relic-Planner/
-├── HSR_Relic.xlsx    # The spreadsheet — open this
-└── README.md
+CharacterName	CavernSet	PlanarSet	score1	score2	score3	score4	score5	score6
 ```
 
-Everything lives in the single `.xlsx` file across three tabs. No macros, no add-ins, no external data connections required.
+Example:
+```
+Kafka	Ashblazing	Firmament	2	2	3	4	2	3
+Acheron	Prisoner	Rutilant	3	2	4	4	3	2
+Firefly	Iron	Firmament	2	3	2	4	4	3
+```
+
+The scores go in order: Head, Hands, Body, Boots (cavern), then Sphere, Rope (planar).
+
+It also accepts a compact no-space format if you want to type fast:
+```
+KafkaAshblazingFirmament223423
+```
+
+Hit **Parse & Add** and it drops them into the table.
+
+---
+
+### Step 4 — Calculate
+
+Hit the big **⚡ Calculate Priority** button.
+
+You get two ranked lists:
+
+**Sets — Farm Priority**
+Which individual relic sets need the most work, scored by the total weight of bad pieces you have equipped from that set. This is useful if you already know what domain you want to run and just want confirmation.
+
+**Domains — Farm Priority**
+Which domains to actually run. A domain drops two sets, so if both sets on your roster are in bad shape, that domain ranks higher. This is the main output — look at #1 and go run it.
+
+---
+
+## Cavern vs Planar — What's the Difference
+
+**Cavern Relics** come from Cavern of Corrosion domains. They're the 4-piece sets — Head, Hands, Body, Boots. Each domain drops two different cavern sets, and you can get either from a single run. These have 4-piece set bonuses.
+
+**Planar Ornaments** come from Simulated Universe and Divergent Universe. They're the 2-piece sets — Sphere and Rope. You can't farm them from the same domains as cavern relics. These only have 2-piece bonuses.
+
+The tool tracks them separately. The domain reference table at the bottom shows every domain with a **Cavern** or **Planar** badge so you always know what you're farming.
+
+---
+
+## Domain Reference Table
+
+Scroll down to see the full list of every domain and what it drops. Use the search box to find a specific set or domain name. Useful when you're looking at a set in the results and want to know which domain drops it.
+
+---
+
+## Data Persistence
+
+Everything you enter saves automatically to your browser's localStorage. If you close the tab and come back, your roster is still there. The scoring config saves too.
+
+To start fresh, use the **Clear All** button in the top right.
 
 ---
 
 ## Tips
 
-- **Ratings are subjective** — the sheet doesn't know what stats rolled; use your own judgement for what counts as a 3 vs a 4.
-- **Re-rate after farming** — update ratings whenever you replace a piece so the domain scores stay accurate.
-- **Zero means skip** — a domain with a score of 0 means none of your current characters need upgrades there. Save your resin.
-- **Ties are fine** — if two domains score the same, pick the one whose sets you'll use on more upcoming characters.
+- Load the sample data (**Load Sample** button) to see how it all looks filled in before you enter your own characters.
+- You don't need to fill in every character to get useful results. Even 3–4 characters with a shared set will show signal.
+- If two characters share the same domain (e.g., both running Ashblazing), that domain will rank higher than it would for a single character — which is the whole point.
+- Planar ornaments can be targeted in the Simulated Universe by selecting which path/world you want. The tool tells you which planar sets to prioritize; the SU/DU routing is up to you.
+
+---
+
+## No Dependencies
+
+One `.html` file. No frameworks, no CDN calls at runtime (fonts load from Google Fonts, that's it), no accounts, no tracking. Everything runs locally in your browser.
+
+---
+
+## Credits
+
+Built for personal use to stop making bad resin decisions at 1am.
